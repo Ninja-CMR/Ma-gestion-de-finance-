@@ -4,6 +4,13 @@ import { LayoutDashboard, BarChart3, Wallet } from 'lucide-vue-next';
 
 <template>
   <div class="min-h-screen p-4 md:p-8">
+    <header class="max-w-2xl mx-auto mb-8 flex flex-col items-center gap-4">
+      <div class="w-24 h-24 border-4 border-black rounded-full overflow-hidden shadow-brutal bg-pastel-blue transform hover:scale-110 transition-transform">
+        <img src="/logo.png" alt="Kawaii Finance Logo" class="w-full h-full object-cover" />
+      </div>
+      <h1 class="text-3xl font-black italic tracking-tighter">KAWAII FINANCE</h1>
+    </header>
+
     <nav class="max-w-2xl mx-auto mb-12 flex justify-between gap-4">
       <router-link 
         to="/" 
