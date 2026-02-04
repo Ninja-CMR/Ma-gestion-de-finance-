@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 export interface Transaction {
     id: string;
@@ -24,9 +24,15 @@ export interface Budget {
     description: string;
 }
 
+const STORAGE_KEY_TRANSACTIONS = 'kawaii_finance_transactions';
+const STORAGE_KEY_BUDGETS = 'kawaii_finance_budgets';
+
 export const useFinanceStore = defineStore('finance', () => {
-    // Mock data with varied dates for charting
-    const transactions = ref<Transaction[]>([
+    // Initial load from localStorage or fallback to defaults
+    const savedTransactions = localStorage.getItem(STORAGE_KEY_TRANSACTIONS);
+    const savedBudgets = localStorage.getItem(STORAGE_KEY_BUDGETS);
+
+    const transactions = ref<Transaction[]>(savedTransactions ? JSON.parse(savedTransactions) : [
         {
             id: '1',
             label: 'Bubble Tea',
@@ -50,24 +56,24 @@ export const useFinanceStore = defineStore('finance', () => {
             category: 'Bills',
             date: new Date().toISOString(),
             type: 'expense'
-        },
-        {
-            id: '4',
-            label: 'Courses',
-            amount: 25000,
-            category: 'Food',
-            date: new Date(Date.now() - 86400000).toISOString(), // Yesterday
-            type: 'expense'
-        },
-        {
-            id: '5',
-            label: 'Transport',
-            amount: 12000,
-            category: 'Other',
-            date: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-            type: 'expense'
         }
     ]);
+
+    const budgets = ref<Budget[]>(savedBudgets ? JSON.parse(savedBudgets) : [
+        { id: '1', category: 'Alimentation', limit: 100000, current: 4500, color: 'bg-pastel-pink', description: 'Budget pour les courses et restaurants.' },
+        { id: '2', category: 'Sorties', limit: 50000, current: 0, color: 'bg-pastel-yellow', description: 'Cinémas, bars et activités de loisirs.' },
+        { id: '3', category: 'Transport', limit: 30000, current: 0, color: 'bg-pastel-mint', description: 'Abonnement bus et petits trajets.' },
+        { id: '4', category: 'Abonnements', limit: 25000, current: 0, color: 'bg-pastel-blue', description: 'Netflix, Spotify, et autres services.' },
+    ]);
+
+    // Watch for changes and persist
+    watch(transactions, (newVal) => {
+        localStorage.setItem(STORAGE_KEY_TRANSACTIONS, JSON.stringify(newVal));
+    }, { deep: true });
+
+    watch(budgets, (newVal) => {
+        localStorage.setItem(STORAGE_KEY_BUDGETS, JSON.stringify(newVal));
+    }, { deep: true });
 
     const proverbs = ref<Proverb[]>([
         { text: "Une petite fuite peut couler un grand navire.", origin: "Chinois" },
@@ -78,13 +84,6 @@ export const useFinanceStore = defineStore('finance', () => {
         { text: "L'argent est un bon serviteur mais un mauvais maître.", origin: "Européen" },
         { text: "Le temps, c'est de l'argent.", origin: "Européen" },
         { text: "Si tu veux savoir la valeur de l'argent, essaie d'en emprunter.", origin: "Chinois" }
-    ]);
-
-    const budgets = ref<Budget[]>([
-        { id: '1', category: 'Alimentation', limit: 100000, current: 29500, color: 'bg-pastel-pink', description: 'Budget pour les courses et restaurants.' },
-        { id: '2', category: 'Sorties', limit: 50000, current: 15000, color: 'bg-pastel-yellow', description: 'Cinémas, bars et activités de loisirs.' },
-        { id: '3', category: 'Transport', limit: 30000, current: 12000, color: 'bg-pastel-mint', description: 'Abonnement bus et petits trajets.' },
-        { id: '4', category: 'Abonnements', limit: 25000, current: 20000, color: 'bg-pastel-blue', description: 'Netflix, Spotify, et autres services.' },
     ]);
 
     const proverbOfTheDay = computed(() => {
