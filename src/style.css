@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  background-color: #FDFCF0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+/* Base Neo-Brutalist Styles */
+@layer components {
+  .btn-brutal {
+    @apply border-2 border-black shadow-brutal hover:shadow-brutal-hover active:translate-x-[2px] active:translate-y-[2px] transition-all rounded-neo px-6 py-3 font-bold;
+  }
+
+  .card-brutal {
+    @apply border-2 border-black shadow-brutal rounded-neo p-6 bg-white;
+  }
+
+  .input-brutal {
+    @apply border-2 border-black rounded-neo px-4 py-2 focus:outline-none focus:ring-0;
+  }
+}
